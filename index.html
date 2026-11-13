@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Lending Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container">
+      <h1 class="title">Book Lending Tracker</h1>
+      <p class="subtitle">Keep track of what you lent, to whom, and when it is due.</p>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="card" aria-labelledby="form-heading">
+      <h2 id="form-heading" class="card-title">Lend a book</h2>
+
+      <form id="loan-form" class="form" novalidate>
+        <div class="form-group">
+          <label for="title" class="label">Title</label>
+          <div class="field-row">
+            <input type="text" id="title" name="title" class="input" required>
+            <span id="title-error" class="error"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="author" class="label">Author</label>
+          <div class="field-row">
+            <input type="text" id="author" name="author" class="input" required>
+            <span id="author-error" class="error"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="borrower" class="label">Borrower</label>
+          <div class="field-row">
+            <input type="text" id="borrower" name="borrower" class="input" required>
+            <span id="borrower-error" class="error"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="dueDate" class="label">Due date</label>
+          <div class="field-row">
+            <input type="date" id="dueDate" name="dueDate" class="input" required>
+            <span id="dueDate-error" class="error"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="genre" class="label">Genre</label>
+          <div class="field-row">
+            <select id="genre" name="genre" class="input" required>
+              <option value="">-- Choose a genre --</option>
+              <option value="Fiction">Fiction</option>
+              <option value="Science">Science</option>
+              <option value="History">History</option>
+              <option value="Technology">Technology</option>
+            </select>
+            <span id="genre-error" class="error"></span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add loan</button>
+      </form>
+    </section>
+
+    <section class="card" aria-labelledby="list-heading">
+      <h2 id="list-heading" class="card-title">Lent books</h2>
+
+      <div class="summary">
+        <div class="summary-item">
+          <span class="summary-label">Total loans</span>
+          <span id="total-loans" class="summary-value">0</span>
+        </div>
+        <div class="summary-item summary-item-danger">
+          <span class="summary-label">Overdue loans</span>
+          <span id="overdue-loans" class="summary-value">0</span>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Borrower</th>
+              <th>Due date</th>
+              <th>Genre</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="loan-table-body"></tbody>
+        </table>
+      </div>
+
+      <p id="empty-msg" class="empty">No books lent yet.</p>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-text">&copy; 2026 Floid Likafi &middot; Web Technologies</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
