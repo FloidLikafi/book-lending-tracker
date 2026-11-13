@@ -1,186 +1,126 @@
-const LendingLib = {
-  loans: [],
+const STORAGE_KEY = "loans";
 
-  messages: {
-    title: "Please enter the book title.",
-    author: "Please enter the author's name.",
-    borrower: "Please enter who borrowed the book.",
-    dueDate: "Please choose a due date.",
-    genre: "Please select a genre."
-  },
-
-  init: function () {
-    const form = document.getElementById("loan-form");
-    LendingLib.loans = JSON.parse(localStorage.getItem("loans")) || [];
-
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
-      if (LendingLib.validateForm()) {
-        LendingLib.addLoan();
-        form.reset();
-      }
-    });
-
-    for (const id in LendingLib.messages) {
-      const field = document.getElementById(id);
-      field.addEventListener("input", function () {
-        LendingLib.validateField(field);
-      });
-    }
-
-    LendingLib.render();
-  },
-
-  save: function () {
-    localStorage.setItem("loans", JSON.stringify(LendingLib.loans));
-  },
-
-  today: function () {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    return year + "-" + month + "-" + day;
-  },
-
-  getStatus: function (loan) {
-    if (loan.returned) {
-      return "Returned";
-    }
-    if (loan.dueDate < LendingLib.today()) {
-      return "Overdue";
-    }
-    return "On loan";
-  },
-
-  validateField: function (field) {
-    const error = document.getElementById(field.id + "-error");
-
-    if (field.value.trim() === "") {
-      error.textContent = LendingLib.messages[field.id];
-      field.classList.add("input-invalid");
-      return false;
-    }
-
-    error.textContent = "";
-    field.classList.remove("input-invalid");
-    return true;
-  },
-
-  validateForm: function () {
-    let isValid = true;
-    for (const id in LendingLib.messages) {
-      const field = document.getElementById(id);
-      if (!LendingLib.validateField(field)) {
-        isValid = false;
-      }
-    }
-    return isValid;
-  },
-
-  addLoan: function () {
-    const loan = {
-      id: Date.now(),
-      title: document.getElementById("title").value.trim(),
-      author: document.getElementById("author").value.trim(),
-      borrower: document.getElementById("borrower").value.trim(),
-      dueDate: document.getElementById("dueDate").value,
-      genre: document.getElementById("genre").value,
-      returned: false
-    };
-    LendingLib.loans.push(loan);
-    LendingLib.save();
-    LendingLib.render();
-  },
-
-  markReturned: function (id) {
-    for (const loan of LendingLib.loans) {
-      if (loan.id === id) {
-        loan.returned = true;
-      }
-    }
-    LendingLib.save();
-    LendingLib.render();
-  },
-
-  deleteLoan: function (id) {
-    LendingLib.loans = LendingLib.loans.filter(function (loan) {
-      return loan.id !== id;
-    });
-    LendingLib.save();
-    LendingLib.render();
-  },
-
-  createCell: function (text) {
-    const td = document.createElement("td");
-    td.textContent = text;
-    return td;
-  },
-
-  createButton: function (text, className, onClick) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = text;
-    button.className = "btn btn-small " + className;
-    button.addEventListener("click", onClick);
-    return button;
-  },
-
-  render: function () {
-    const tableBody = document.getElementById("loan-table-body");
-    tableBody.innerHTML = "";
-    let overdueCount = 0;
-
-    for (const loan of LendingLib.loans) {
-      const status = LendingLib.getStatus(loan);
-      if (status === "Overdue") {
-        overdueCount++;
-      }
-
-      const row = document.createElement("tr");
-      row.appendChild(LendingLib.createCell(loan.title));
-      row.appendChild(LendingLib.createCell(loan.author));
-      row.appendChild(LendingLib.createCell(loan.borrower));
-      row.appendChild(LendingLib.createCell(loan.dueDate));
-      row.appendChild(LendingLib.createCell(loan.genre));
-
-      const statusCell = document.createElement("td");
-      const badge = document.createElement("span");
-      badge.textContent = status;
-      if (status === "Returned") {
-        badge.className = "badge badge-returned";
-      } else if (status === "Overdue") {
-        badge.className = "badge badge-overdue";
-      } else {
-        badge.className = "badge badge-onloan";
-      }
-      statusCell.appendChild(badge);
-      row.appendChild(statusCell);
-
-      const actionCell = document.createElement("td");
-      if (!loan.returned) {
-        actionCell.appendChild(LendingLib.createButton("Returned", "btn-success", function () {
-          LendingLib.markReturned(loan.id);
-        }));
-      }
-      actionCell.appendChild(LendingLib.createButton("Delete", "btn-danger", function () {
-        LendingLib.deleteLoan(loan.id);
-      }));
-      row.appendChild(actionCell);
-
-      tableBody.appendChild(row);
-    }
-
-    document.getElementById("total-loans").textContent = LendingLib.loans.length;
-    document.getElementById("overdue-loans").textContent = overdueCount;
-
-    const emptyMessage = document.getElementById("empty-msg");
-    if (LendingLib.loans.length === 0) {
-      emptyMessage.classList.remove("hidden");
-    } else {
-      emptyMessage.classList.add("hidden");
-    }
-  }
+const rules = {
+  title: "Please enter the book title.",
+  author: "Please enter the author's name.",
+  borrower: "Please enter who borrowed the book.",
+  dueDate: "Please choose a due date.",
+  genre: "Please select a genre."
 };
 
-document.addEventListener("DOMContentLoaded", LendingLib.init);
+let loans = MiniLib.load(STORAGE_KEY);
+
+function getStatus(loan) {
+  if (loan.returned) {
+    return "Returned";
+  }
+  if (loan.dueDate < MiniLib.today()) {
+    return "Overdue";
+  }
+  return "On loan";
+}
+
+function getBadgeClass(status) {
+  if (status === "Returned") {
+    return "badge badge-success";
+  }
+  if (status === "Overdue") {
+    return "badge badge-danger";
+  }
+  return "badge badge-warning";
+}
+
+function addLoan() {
+  loans.push({
+    id: Date.now(),
+    title: MiniLib.get("title").value.trim(),
+    author: MiniLib.get("author").value.trim(),
+    borrower: MiniLib.get("borrower").value.trim(),
+    dueDate: MiniLib.get("dueDate").value,
+    genre: MiniLib.get("genre").value,
+    returned: false
+  });
+  saveAndRender();
+}
+
+function markReturned(id) {
+  for (const loan of loans) {
+    if (loan.id === id) {
+      loan.returned = true;
+    }
+  }
+  saveAndRender();
+}
+
+function deleteLoan(id) {
+  loans = loans.filter(function (loan) {
+    return loan.id !== id;
+  });
+  saveAndRender();
+}
+
+function saveAndRender() {
+  MiniLib.save(STORAGE_KEY, loans);
+  render();
+}
+
+function render() {
+  const tableBody = MiniLib.get("loan-table-body");
+  MiniLib.clear(tableBody);
+  let overdueCount = 0;
+
+  for (const loan of loans) {
+    const status = getStatus(loan);
+    if (status === "Overdue") {
+      overdueCount++;
+    }
+
+    const row = MiniLib.create("tr");
+    row.appendChild(MiniLib.create("td", loan.title));
+    row.appendChild(MiniLib.create("td", loan.author));
+    row.appendChild(MiniLib.create("td", loan.borrower));
+    row.appendChild(MiniLib.create("td", loan.dueDate));
+    row.appendChild(MiniLib.create("td", loan.genre));
+
+    const statusCell = MiniLib.create("td");
+    statusCell.appendChild(MiniLib.create("span", status, getBadgeClass(status)));
+    row.appendChild(statusCell);
+
+    const actionCell = MiniLib.create("td");
+    if (!loan.returned) {
+      const returnButton = MiniLib.create("button", "Returned", "btn btn-sm btn-success mr-1");
+      MiniLib.on(returnButton, "click", function () {
+        markReturned(loan.id);
+      });
+      actionCell.appendChild(returnButton);
+    }
+    const deleteButton = MiniLib.create("button", "Delete", "btn btn-sm btn-danger");
+    MiniLib.on(deleteButton, "click", function () {
+      deleteLoan(loan.id);
+    });
+    actionCell.appendChild(deleteButton);
+    row.appendChild(actionCell);
+
+    tableBody.appendChild(row);
+  }
+
+  MiniLib.get("total-loans").textContent = loans.length;
+  MiniLib.get("overdue-loans").textContent = overdueCount;
+
+  if (loans.length === 0) {
+    MiniLib.show(MiniLib.get("empty-msg"));
+  } else {
+    MiniLib.hide(MiniLib.get("empty-msg"));
+  }
+}
+
+MiniLib.on(MiniLib.get("loan-form"), "submit", function (event) {
+  event.preventDefault();
+  if (MiniLib.validateForm(rules)) {
+    addLoan();
+    MiniLib.get("loan-form").reset();
+  }
+});
+
+MiniLib.liveValidate(rules);
+render();
