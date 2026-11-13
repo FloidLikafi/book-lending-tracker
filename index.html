@@ -8,62 +8,62 @@
 </head>
 <body>
 
-  <header class="header">
+  <header class="bg-primary text-white py-3 mb-3">
     <div class="container">
-      <h1 class="title">Book Lending Tracker</h1>
-      <p class="subtitle">Keep track of what you lent, to whom, and when it is due.</p>
+      <h1 class="m-0">Book Lending Tracker</h1>
+      <p class="m-0 mt-1">Keep track of what you lent, to whom, and when it is due.</p>
     </div>
   </header>
 
   <main class="container">
 
-    <section class="card" aria-labelledby="form-heading">
-      <h2 id="form-heading" class="card-title">Lend a book</h2>
+    <section class="card mb-3">
+      <h2 class="card-title">Lend a book</h2>
 
-      <form id="loan-form" class="form" novalidate>
+      <form id="loan-form" novalidate>
         <div class="form-group">
-          <label for="title" class="label">Title</label>
-          <div class="field-row">
-            <input type="text" id="title" name="title" class="input" required>
-            <span id="title-error" class="error"></span>
+          <label for="title" class="form-label">Title</label>
+          <div class="d-flex flex-wrap align-center gap-1">
+            <input type="text" id="title" class="form-control" required>
+            <span id="title-error" class="form-error"></span>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="author" class="label">Author</label>
-          <div class="field-row">
-            <input type="text" id="author" name="author" class="input" required>
-            <span id="author-error" class="error"></span>
+          <label for="author" class="form-label">Author</label>
+          <div class="d-flex flex-wrap align-center gap-1">
+            <input type="text" id="author" class="form-control" required>
+            <span id="author-error" class="form-error"></span>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="borrower" class="label">Borrower</label>
-          <div class="field-row">
-            <input type="text" id="borrower" name="borrower" class="input" required>
-            <span id="borrower-error" class="error"></span>
+          <label for="borrower" class="form-label">Borrower</label>
+          <div class="d-flex flex-wrap align-center gap-1">
+            <input type="text" id="borrower" class="form-control" required>
+            <span id="borrower-error" class="form-error"></span>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="dueDate" class="label">Due date</label>
-          <div class="field-row">
-            <input type="date" id="dueDate" name="dueDate" class="input" required>
-            <span id="dueDate-error" class="error"></span>
+          <label for="dueDate" class="form-label">Due date</label>
+          <div class="d-flex flex-wrap align-center gap-1">
+            <input type="date" id="dueDate" class="form-control" required>
+            <span id="dueDate-error" class="form-error"></span>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="genre" class="label">Genre</label>
-          <div class="field-row">
-            <select id="genre" name="genre" class="input" required>
+          <label for="genre" class="form-label">Genre</label>
+          <div class="d-flex flex-wrap align-center gap-1">
+            <select id="genre" class="form-control" required>
               <option value="">-- Choose a genre --</option>
               <option value="Fiction">Fiction</option>
               <option value="Science">Science</option>
               <option value="History">History</option>
               <option value="Technology">Technology</option>
             </select>
-            <span id="genre-error" class="error"></span>
+            <span id="genre-error" class="form-error"></span>
           </div>
         </div>
 
@@ -71,17 +71,17 @@
       </form>
     </section>
 
-    <section class="card" aria-labelledby="list-heading">
-      <h2 id="list-heading" class="card-title">Lent books</h2>
+    <section class="card mb-3">
+      <h2 class="card-title">Lent books</h2>
 
-      <div class="summary">
-        <div class="summary-item">
-          <span class="summary-label">Total loans</span>
-          <span id="total-loans" class="summary-value">0</span>
+      <div class="d-flex gap-2 mb-2">
+        <div class="stat">
+          <span class="stat-label">Total loans</span>
+          <span id="total-loans" class="stat-value">0</span>
         </div>
-        <div class="summary-item summary-item-danger">
-          <span class="summary-label">Overdue loans</span>
-          <span id="overdue-loans" class="summary-value">0</span>
+        <div class="stat stat-danger">
+          <span class="stat-label">Overdue loans</span>
+          <span id="overdue-loans" class="stat-value">0</span>
         </div>
       </div>
 
@@ -102,17 +102,18 @@
         </table>
       </div>
 
-      <p id="empty-msg" class="empty">No books lent yet.</p>
+      <p id="empty-msg" class="text-muted text-center">No books lent yet.</p>
     </section>
 
   </main>
 
-  <footer class="footer">
+  <footer class="bg-white border-top py-2">
     <div class="container">
-      <p class="footer-text">&copy; 2026 Floid Likafi &middot; Web Technologies</p>
+      <p class="m-0 text-center text-muted text-small">&copy; 2026 Floid Likafi &middot; Web Technologies</p>
     </div>
   </footer>
 
+  <script src="library.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
